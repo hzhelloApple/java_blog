@@ -16,4 +16,8 @@ public class Article {
     private String summary;
 
     private Long bodyId;
+
+    private Integer viewCounts;
+
+    private Integer categoryId;
 }

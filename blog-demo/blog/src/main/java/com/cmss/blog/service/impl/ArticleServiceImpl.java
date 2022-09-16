@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmss.blog.dao.mapper.ArticleBodyMapper;
 import com.cmss.blog.dao.mapper.ArticleMapper;
+import com.cmss.blog.dao.mapper.CategoryMapper;
 import com.cmss.blog.dao.pojo.Article;
 import com.cmss.blog.dao.pojo.ArticleBody;
+import com.cmss.blog.dao.pojo.Category;
 import com.cmss.blog.service.ArticleService;
 import com.cmss.blog.utils.JWTUtil;
 import com.cmss.blog.vo.ArticleVo;
@@ -39,7 +41,7 @@ public class ArticleServiceImpl implements ArticleService {
         LambdaQueryWrapper<Article> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.orderByDesc(Article::getCreateDate);
         List<Article> articles = articleMapper.selectList(lambdaQueryWrapper);
-        return CommenResult.success(copylist(articles));
+        return CommenResult.success(copylist(articles, false));
     }
 
     @Override
@@ -48,7 +50,7 @@ public class ArticleServiceImpl implements ArticleService {
         Page<Article> page = new Page<>(pageParam.getPage(), pageParam.getPageSize());
         Page<Article> articlePage = articleMapper.selectPage(page, lambdaQueryWrapper);
         List<Article> records = articlePage.getRecords();
-        return CommenResult.success(copylist(records));
+        return CommenResult.success(copylist(records , true));
     }
 
     @Override
@@ -153,14 +155,31 @@ public class ArticleServiceImpl implements ArticleService {
     private List<ArticleVo> copylist(List<Article> articles) {
         List<ArticleVo> articleVos = new ArrayList<>();
         for (Article article : articles) {
-            articleVos.add(copy(article));
+            articleVos.add(copy(article , false));
         }
         return articleVos;
     }
 
-    private ArticleVo copy(Article article) {
+    @Autowired
+    private CategoryMapper categoryMapper;
+
+    private ArticleVo copy(Article article , boolean isCategory) {
         ArticleVo articleVo = new ArticleVo();
         BeanUtils.copyProperties(article , articleVo);
+        if (isCategory){
+            LambdaQueryWrapper<Category> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+            lambdaQueryWrapper.eq(Category::getId , article.getCategoryId());
+            Category category = categoryMapper.selectOne(lambdaQueryWrapper);
+            articleVo.setCategory(category);
+        }
         return articleVo;
+    }
+
+    private List<ArticleVo> copylist(List<Article> articles , boolean isCategory) {
+        List<ArticleVo> articleVos = new ArrayList<>();
+        for (Article article : articles) {
+            articleVos.add(copy(article , isCategory));
+        }
+        return articleVos;
     }
 }

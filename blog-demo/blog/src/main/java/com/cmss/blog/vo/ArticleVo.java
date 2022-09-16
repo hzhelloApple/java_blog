@@ -1,5 +1,6 @@
 package com.cmss.blog.vo;
 
+import com.cmss.blog.dao.pojo.Category;
 import lombok.Data;
 
 @Data
@@ -9,12 +10,14 @@ public class ArticleVo {
 
     private String createDate;
 
-    private String authorId;
+    private Long authorId;
 
     private String title;
 
     private String summary;
 
     private String content;
+
+    private Category category;
 
 }

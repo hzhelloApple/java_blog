@@ -10,4 +10,6 @@ public interface UserService {
     CommenResult login(LoginParam loginParam);
 
     CommenResult loginOut(LoginParam loginParam);
+
+    CommenResult currentUserInfo(String token);
 }

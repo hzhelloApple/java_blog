@@ -7,11 +7,14 @@ import com.cmss.blog.service.UserService;
 import com.cmss.blog.utils.JWTUtil;
 import com.cmss.blog.vo.CommenResult;
 import com.cmss.blog.vo.ErrorCode;
+import com.cmss.blog.vo.UserVo;
 import com.cmss.blog.vo.params.LoginParam;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -84,6 +87,21 @@ public class UserServiceImpl implements UserService {
         }
 
         return CommenResult.success("loginOut，删除token");
+    }
+
+    @Override
+    public CommenResult currentUserInfo(String token) {
+
+        Map<String, Object> stringObjectMap = JWTUtil.checkToken(token);
+        Object userId = stringObjectMap.get("userId");
+        Object account = stringObjectMap.get("account");
+        Object nickname = stringObjectMap.get("nickname");
+
+        UserVo userVo = new UserVo();
+        userVo.setId(Long.parseLong(String.valueOf(userId)));
+        userVo.setAccount(String.valueOf(account));
+        userVo.setNickname(String.valueOf(nickname));
+        return CommenResult.success(userVo);
     }
 
 }

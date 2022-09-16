@@ -12,4 +12,6 @@ public class ArticleParam {
     private String summary;
 
     private String content;
+
+    private Integer categoryId;
 }

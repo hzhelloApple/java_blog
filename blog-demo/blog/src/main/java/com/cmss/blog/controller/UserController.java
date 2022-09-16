@@ -4,10 +4,7 @@ import com.cmss.blog.service.UserService;
 import com.cmss.blog.vo.CommenResult;
 import com.cmss.blog.vo.params.LoginParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("users")
@@ -34,4 +31,9 @@ public class UserController {
         return userService.loginOut(loginParam);
     }
 
+    @GetMapping("currentUser")
+    public CommenResult currentUser(@RequestHeader("Authorization") String token){
+
+        return userService.currentUserInfo(token);
+    }
 }
